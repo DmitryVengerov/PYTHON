@@ -19,7 +19,7 @@ def get(url, params={}, timeout=5, max_retries=5, backoff_factor=0.3):
             if attempt == max_retries - 1:
                 raise
             backoff_value = backoff_factor * (2 ** attempt)
-            
+
 
 def get_data(user_id, field):
     # for configuration to another ethernet point you must get access_token
@@ -36,6 +36,7 @@ def get_data(user_id, field):
 
     return requests.get(query).json()
 
+
 def get_history(user_id):
     # for configuration to another ethernet point you must get access_token
     # ones more because api check ip-address and then would give you token
@@ -43,10 +44,11 @@ def get_history(user_id):
         'domain': config['domain'],
         'access_token': config['access_token'],
         'user_id': user_id,
-        'method' : 'messages.getHistory'
+        'method': 'messages.getHistory'
     }
 
-    query = "{domain}/{method}?access_token={access_token}&user_id={user_id}&v=5.53".format(**query_params)
+    query = "{domain}/{method}?access_token={access_token}&user_id={user_id}&v=5.53".format(
+        **query_params)
 
     return requests.get(query).json()
 
@@ -99,19 +101,12 @@ def messages_get_history(user_id, offset=0, count=20):
         'count': min(count, max_count)
     }
 
-    while count > 0:
+    data_1 = get_history(user_id)
+    mes = data_1
+    messages = []
+    for i in range(len(mes)+1):
+        messages.append(datetime.fromtimestamp(mes['response']['items'][i]['date']).strftime("%Y-%m-%d"))
 
-        data_1 = get_history(user_id)
-        response = get(data_1, params=query_params)
-        count -= min(count, max_count)
-        query_params['offset'] += 200
-        query_params['count'] = min(count, max_count)
-        print(response.json())
-        messages += response.json()
-        mes = messages
-        print('obj:'+mes)
-
-    
     return messages
 
 
@@ -119,14 +114,6 @@ if __name__ == '__main__':
     # config
     message = messages_get_history(user_id)
     age = age_predict(user_id)
-    
-   
+
     print(age)
-
-
-
-      
-
-
-
-
+    print(message)
