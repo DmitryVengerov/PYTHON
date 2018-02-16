@@ -7,7 +7,7 @@ config = {
     'access_token': "3439b8692d001b5db1285e92b82dc647155fbf6990d6a7fffcb01dd783f9748e2a1f47ad48aeb96954965&expires_in"
 }
 
-user_id = 12603412
+user_id = 144176481
 
 
 def get(url, params={}, timeout=5, max_retries=5, backoff_factor=0.3):
@@ -102,10 +102,12 @@ def messages_get_history(user_id, offset=0, count=20):
     }
 
     data_1 = get_history(user_id)
-    mes = data_1
+    print((data_1['response']['items']))
+    mes = len(data_1['response']['items'])
+
     messages = []
-    for i in range(len(mes)+1):
-        messages.append(datetime.fromtimestamp(mes['response']['items'][i]['date']).strftime("%Y-%m-%d"))
+    for i in range(mes):
+        messages.append(datetime.fromtimestamp(data_1['response']['items'][i]['date']).strftime("%Y-%m-%d"))
 
     return messages
 
