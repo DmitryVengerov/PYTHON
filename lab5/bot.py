@@ -1,16 +1,14 @@
-
 import telebot
 import datetime
 import sys
 import requests
 import time
 import webbrowser
+
 from telebot import types
 from bs4 import BeautifulSoup
-
+# token gives you from botfather 
 access_token = '5'
-
-
 bot = telebot.TeleBot(access_token)
 
 def get_page(group, week=''):

@@ -1,12 +1,10 @@
 def st(st1, st2):
     # проверка длин строк
     if(len(st1) == len(st2)):
-
     	st1chet = []
     	st1nechet = []
     	st2chet = []
     	st2nechet = []
-    	
     	for i in range(len(st1)):
     		if i % 2 == 0:
     			st1chet.append(st1[i])
@@ -19,8 +17,8 @@ def st(st1, st2):
     		else:
     			st2nechet.append(st2[i])
 
-    	st1chet =sorted(st1chet)
-    	st2chet =sorted(st2chet)
+    	st1chet = sorted(st1chet)
+    	st2chet = sorted(st2chet)
     	st1nechet = sorted(st1nechet)
     	st2nechet = sorted(st2nechet)
 
@@ -29,7 +27,6 @@ def st(st1, st2):
     	else:
     		print('false')
     else:
-        # длины не совпадают
         print('length does not match')
 
 if __name__ == '__main__':
