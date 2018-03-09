@@ -15,6 +15,7 @@ def get_news(url='https://news.ycombinator.com/newest', pageCount=1):
 
     # catch get url for other pages
     moreLink = tbl_list.findAll('a', {'class': 'morelink'})
+    print(moreLink)
     nextPage = url+moreLink[0].get('href').replace('newest', '') 
 
     print(nextPage)
