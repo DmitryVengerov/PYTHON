@@ -4,7 +4,10 @@ from bs4 import BeautifulSoup
 news_list = []
 data = {}
 
-def get_news(url='https://news.ycombinator.com/newest', pageCount=1):
+
+def get_data(url='https://news.ycombinator.com/newest'):
+    # dump all datas from page
+    print('Parsing from ' + url)
     r = requests.get(url)
     page = BeautifulSoup(r.text, 'html.parser')
     tbl_list = page.table.find('table', {'class': 'itemlist'})
@@ -12,17 +15,9 @@ def get_news(url='https://news.ycombinator.com/newest', pageCount=1):
     storyAuthor = tbl_list.findAll('a', {'class': 'hnuser'})
     storyPoints = tbl_list.findAll('span', {'class': 'score'})
     storyComments = tbl_list.findAll('td', {'class': 'subtext'})
-
-    # catch get url for other pages
-    moreLink = tbl_list.findAll('a', {'class': 'morelink'})
-    print(moreLink)
-    nextPage = url+moreLink[0].get('href').replace('newest', '') 
-
-    print(nextPage)
-
     for i in range(len(storyTitle)):
         tempCom = storyComments[i].findAll('a')
-        tempCom = tempCom[len(tempCom)-1].text    
+        tempCom = tempCom[len(tempCom)-1].text
         if(tempCom == 'discuss'):
             tempCom = int(0)
         else:
@@ -43,12 +38,34 @@ def get_news(url='https://news.ycombinator.com/newest', pageCount=1):
         })
     return news_list
 
-def next_page(url,page):
-    return url
+
+def get_link(url):
+    # cath others pages
+    r = requests.get(url)
+    page = BeautifulSoup(r.text, 'html.parser')
+    tbl_list = page.table.find('table', {'class': 'itemlist'})
+    moreLink = tbl_list.findAll('a', {'class': 'morelink'})
+    nextPage = url[:35]+moreLink[0].get('href').replace('newest', '')
+
+    return nextPage
+
+
+def get_news(url, pages=1):
+    # controller for requesting
+    '''
+    
+    if(pages == 1):
+        data = get_data(url)
+    else:'''
+    i = 1
+    while i <= pages:
+        get_data(url)
+        get_data(get_link(url))
+        get_data(get_link(get_link(url)))
+        i += 1
+            
+    # return data
+
 
 if __name__ == '__main__':
-    print(get_news())
-    #print(get_news('https://news.ycombinator.com/newest?next=16513818&n=31'))
-    #print(get_news('https://news.ycombinator.com/newest?next=16513229&n=61'))
-
-    
+    get_news('https://news.ycombinator.com/newest', 3)
