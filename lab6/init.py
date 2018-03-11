@@ -5,6 +5,7 @@ news_list = []
 data = {}
 
 
+
 def get_data(url='https://news.ycombinator.com/newest'):
     # dump all datas from page
     print('Parsing from ' + url)
@@ -15,6 +16,8 @@ def get_data(url='https://news.ycombinator.com/newest'):
     storyAuthor = tbl_list.findAll('a', {'class': 'hnuser'})
     storyPoints = tbl_list.findAll('span', {'class': 'score'})
     storyComments = tbl_list.findAll('td', {'class': 'subtext'})
+    # for changes next url 
+    get_link(url)
     for i in range(len(storyTitle)):
         tempCom = storyComments[i].findAll('a')
         tempCom = tempCom[len(tempCom)-1].text
@@ -29,6 +32,7 @@ def get_data(url='https://news.ycombinator.com/newest'):
         data['points'] = tempPoi
         data['title'] = storyTitle[i].text
         data['url'] = storyTitle[i].get('href')
+
         news_list.append({
             'author': data['author'],
             'comments': data['comments'],
@@ -40,32 +44,28 @@ def get_data(url='https://news.ycombinator.com/newest'):
 
 
 def get_link(url):
+    global url_global
     # cath others pages
     r = requests.get(url)
     page = BeautifulSoup(r.text, 'html.parser')
     tbl_list = page.table.find('table', {'class': 'itemlist'})
     moreLink = tbl_list.findAll('a', {'class': 'morelink'})
-    nextPage = url[:35]+moreLink[0].get('href').replace('newest', '')
-
-    return nextPage
+    url_global = url[:35]+moreLink[0].get('href').replace('newest', '')
 
 
 def get_news(url, pages=1):
-    # controller for requesting
-    '''
-    
-    if(pages == 1):
-        data = get_data(url)
-    else:'''
-    i = 1
-    while i <= pages:
-        get_data(url)
-        get_data(get_link(url))
-        get_data(get_link(get_link(url)))
-        i += 1
-            
-    # return data
+    data = []
+    for i in range(pages):
+        if(i==0):
+            news_list.append(get_data(url))
+        else:
+            news_list.append(get_data(url_global)) 
+    len_news = len(news_list)
+
+    print('Was received ',len_news,' elements')
+    return news_list
 
 
 if __name__ == '__main__':
-    get_news('https://news.ycombinator.com/newest', 3)
+    data = get_news('https://news.ycombinator.com/newest',3)
+
