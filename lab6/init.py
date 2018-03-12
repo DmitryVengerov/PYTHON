@@ -67,5 +67,5 @@ def get_news(url, pages=1):
 
 
 if __name__ == '__main__':
-    data = get_news('https://news.ycombinator.com/newest',3)
+    data = get_news('https://news.ycombinator.com/newest',10)
 
