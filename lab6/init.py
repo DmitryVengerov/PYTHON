@@ -1,10 +1,10 @@
 import requests
+import ui
+import db
 from bs4 import BeautifulSoup
 
 news_list = []
 data = {}
-
-
 
 def get_data(url='https://news.ycombinator.com/newest'):
     # dump all datas from page
@@ -61,11 +61,17 @@ def get_news(url, pages=1):
         else:
             news_list.append(get_data(url_global)) 
     len_news = len(news_list)
-
     print('Was received ',len_news,' elements')
+    session = sessionmaker(bind=engine)
+    s = session()
+    s.add_all(news_list)
+    s.comit()
+    
     return news_list
+    
 
 
 if __name__ == '__main__':
-    data = get_news('https://news.ycombinator.com/newest',10)
+    get_news('https://news.ycombinator.com/newest',2)
+    
 
