@@ -11,7 +11,7 @@ def news_list():
 @route('/add_label/')
 
 def add_label():
-    # 1. Получить значения параметров label и id из GET-запроса
+    # 1. Получить значения параметров label и id из GET-запроса + 
     label = request.query.get("label")
     id = request.query.get("id")
     # 2. Получить запись из БД с соответствующим id (такая запись только одна!) 
