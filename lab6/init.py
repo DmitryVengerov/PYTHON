@@ -1,6 +1,6 @@
 import requests
 import ui
-import db
+from  db  import *
 from bs4 import BeautifulSoup
 
 news_list = []
@@ -62,15 +62,17 @@ def get_news(url, pages=1):
             news_list.append(get_data(url_global)) 
     len_news = len(news_list)
     print('Was received ',len_news,' elements')
-    session = sessionmaker(bind=engine)
-    s = session()
-    s.add_all(news_list)
+    news = News(title='Lab 7', 
+                author='dementiy',
+                url='https://dementiy.gitbooks.io/-python/content/lab7.html',
+                comments=0,
+                points=0)
+
+    s.add_all(news)
     s.comit()
     
     return news_list
     
-
-
 if __name__ == '__main__':
     get_news('https://news.ycombinator.com/newest',2)
     
