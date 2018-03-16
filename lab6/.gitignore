@@ -12,3 +12,5 @@ lib64
 url.txt
 .DS_store
 .DS_Store
+# database files
+news.db 

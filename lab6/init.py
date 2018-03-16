@@ -1,6 +1,6 @@
 import requests
-import ui
-from  db  import *
+from ui import *
+from db import *
 from bs4 import BeautifulSoup
 
 news_list = []
@@ -59,21 +59,22 @@ def get_news(url, pages=1):
         if(i==0):
             news_list.append(get_data(url))
         else:
-            news_list.append(get_data(url_global)) 
-    len_news = len(news_list)
-    print('Was received ',len_news,' elements')
-    news = News(title='Lab 7', 
-                author='dementiy',
-                url='https://dementiy.gitbooks.io/-python/content/lab7.html',
-                comments=0,
-                points=0)
-
-    s.add_all(news)
-    s.comit()
+            news_list.append(get_data(url_global))
+    # fail fix bug
+    del news_list[len(news_list)-1]
+    print('Was received ',len(news_list),' elements')
+    
+    for i in range(len(news_list)):
+        news = News(title = news_list[i]['title'], 
+                author = news_list[i]['author'],
+                url = news_list[i]['url'],
+                comments = news_list[i]['comments'],
+                points = news_list[i]['points'])
+        s.add(news)
+        s.commit()
     
     return news_list
     
 if __name__ == '__main__':
-    get_news('https://news.ycombinator.com/newest',2)
-    
+    run(host='localhost', port=8080)
 

@@ -18,18 +18,6 @@ class News(Base):
     comments = Column(Integer)
     points = Column(Integer)
     label = Column(String)
-    
-    def __repr__(self):
-        return "<User(name='%s', fullname='%s', password='%s')>" % (self.name, self.fullname, self.password)
 
 Base.metadata.create_all(bind=engine)
-
 s = session()
-news = News(title='Lab 7', 
-                author='dementiy',
-                url='https://dementiy.gitbooks.io/-python/content/lab7.html',
-                comments=0,
-                points=0)
-
-s.add(news)
-s.commit()
