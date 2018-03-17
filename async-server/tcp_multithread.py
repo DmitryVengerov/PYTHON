@@ -7,7 +7,6 @@ logging.basicConfig(
     format='[%(levelname)s] (%(threadName)-10s) %(message)s'
 )
 
-
 def client_handler(sock, address, port):
     while True:
         try:
