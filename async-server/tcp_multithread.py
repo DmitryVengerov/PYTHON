@@ -35,6 +35,7 @@ def main(host: str = 'localhost', port: int = 9092) -> None:
     sock.bind((host, port))
     sock.listen(128)
     print(f"Starting TCP Echo Server at {host}:{port}")
+
     try:
         while True:
             client_sock, (client_addr, client_port) = sock.accept()

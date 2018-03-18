@@ -1,14 +1,15 @@
-import asyncore
+import argparse
 import asynchat
-import socket
-import multiprocessing
+import asyncore
 import logging
 import mimetypes
+import multiprocessing
 import os
-from urlparse import parse_qs
-import urllib
-import argparse
-from time import strftime, gmtime
+import socket
+# urllib?
+# from urlparse import parse_qs
+import urllib  
+from time import gmtime, strftime
 
 
 def url_normalize(path):
@@ -51,7 +52,35 @@ class AsyncServer(asyncore.dispatcher):
         pass
 
     def serve_forever(self):
-        pass
+        #create an INET, STREAMing socket
+        sock = socket.socket(
+            socket.AF_INET, 
+            socket.SOCK_STREAM)
+        #
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
+        #bind the socket to a public host,
+        # and a well-known port
+        sock.bind(("127.0.0.1", 9000))
+        #become a server socket
+        sock.listen(128)
+        print("Starting TCP Server")
+        try:
+            while True:
+                clientsocket, _ = sock.accept()
+                #take care about users data
+                # why 1024?
+                data = clientsocket.recv(16384)
+                #send result to user
+                clientsocket.sendall(data)
+                print(data)
+                
+                #for close sock uncomment this 
+                #clientsocket.close()
+        except KeyboardInterrupt:
+            
+            print("Shutting down")
+        finally:
+            sock.close()
 
 
 class AsyncHTTPRequestHandler(asynchat.async_chat):
@@ -127,10 +156,29 @@ def run():
     server = AsyncServer(host=args.host, port=args.port)
     server.serve_forever()
 
-if __name__ == "__main__":
-    log = logging.getLogger("server start")
-    args = parse_args()
+def client_handler(sock, address, port):
+    while True:
+        try:
+            message = sock.recv(1024)
+            logging.debug(f"Recv: {message} from {address}:{port}")
+        except OSError:
+            break
 
+        if len(message) == 0:
+            break
+
+        sent_message = message
+        while True:
+            sent_len = sock.send(sent_message)
+            if sent_len == len(sent_message):
+                break
+            sent_message = sent_message[sent_len:]
+        logging.debug(f"Send: {message} to {address}:{port}")
+    sock.close()
+    logging.debug(f"Bye-bye: {address}:{port}")
+
+if __name__ == "__main__":
+    args = parse_args()
     logging.basicConfig(
         filename=args.logfile,
         level=getattr(logging, args.loglevel.upper()),
@@ -138,6 +186,6 @@ if __name__ == "__main__":
     log = logging.getLogger(__name__)
 
     DOCUMENT_ROOT = args.document_root
-    for _ in xrange(args.nworkers):
+    for _ in range(args.nworkers):
         p = multiprocessing.Process(target=run)
         p.start()
