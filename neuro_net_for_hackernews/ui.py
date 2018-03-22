@@ -15,11 +15,11 @@ def add_label():
     label = request.query.get("label")
     id = request.query.get("id")
     # 2. Получить запись из БД с соответствующим id (такая запись только одна!) 
-    return "{label} {id}".format(label=label, id=id)
-    
-    
     # 3. Изменить значение метки записи на значение label
+    s.query(News).filter(News.id == id).all()[0].label = label
     # 4. Сохранить результат в БД
+    #Fix transaction
+    s.commit
     redirect('/news')
 
 @route('/update_news')
