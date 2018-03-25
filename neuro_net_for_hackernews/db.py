@@ -9,9 +9,7 @@ session = sessionmaker(bind=engine)
 
 class News(Base):
     __tablename__ = "news"
-
     id = Column(Integer, primary_key = True)
-
     title = Column(String)
     author = Column(String)
     url = Column(String)
