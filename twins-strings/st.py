@@ -1,5 +1,6 @@
 def st(st1, st2):
-    # проверка длин строк
+    
+	# check the length of strings
     if(len(st1) == len(st2)):
     	st1chet = []
     	st1nechet = []

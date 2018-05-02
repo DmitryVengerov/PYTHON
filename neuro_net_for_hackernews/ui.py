@@ -12,18 +12,14 @@ def news_list():
 
 def add_label():
     # 1. Получить значения параметров label и id из GET-запроса + 
-    label = request.query.get("label")
-    id = request.query.get("id")
+    label = request.query.get("label") or label
+    id = request.query.get("id") or id
     # 2. Получить запись из БД с соответствующим id (такая запись только одна!) 
     # 3. Изменить значение метки записи на значение label
     db.s.query(db.News).filter(db.News.id == id).all()[0].label = label
     # 4. Сохранить результат в БД
     #Fix transaction
-    try:
-        db.s.commit
-    except:
-        print('fail')
-        
+    db.s.commit      
     redirect('/news')
 
 @route('/update_news')
