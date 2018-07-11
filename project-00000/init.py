@@ -1,4 +1,6 @@
-# encryotion algorithms
+#!/usr/bin/env python
+
+# Encryotion algorithms
 # This method is made only for the Latin alphabet
 
 def encrypt_caesar(plaintext):

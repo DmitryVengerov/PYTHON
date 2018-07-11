@@ -33,7 +33,6 @@ def get_page(group, week=''):
         print(web_page)
     return web_page
 
-
 def get_schedule(web_page, day):
     schedule_table = ''
     soup = BeautifulSoup(web_page, "html5lib")
@@ -79,8 +78,6 @@ def get_schedule(web_page, day):
         lessons_list = ''
         room_number = ''
     return times_list, locations_list, lessons_list, room_number
-
-
 
 #@bot.message_handler(commands=['monday'])
 #def get_monday(message):
@@ -134,13 +131,11 @@ def get_command(message, idd=''):
     if web_page == 'error':
         bot.send_message(idd, "error", parse_mode='HTML')
 
-
 @bot.message_handler(commands=['exit'])
 def leave_now(message):
     bot.send_message(message.chat.id, 'We remember', parse_mode='HTML')
     print('exit')
     exit()
-
 
 @bot.message_handler(commands=['tomorrow'])
 def not_today(message):
@@ -154,7 +149,6 @@ def not_today(message):
         elif now.strftime("%A").lower() == 'saturday':
             get_command('/monday %(group)s' % {"group": group}, idd)
             break
-
 
 @bot.message_handler(commands=['near_lesson'])
 def not_today(message):
@@ -204,7 +198,6 @@ def not_today(message):
 
 def prettufy_mode(resp):
         # delete all trush
-
         resp = resp.replace('\t', '')
         resp = resp.replace('\n', '')
             # make this better
@@ -217,11 +210,8 @@ def prettufy_mode(resp):
         resp = resp.replace('/thursday,','<i>Четверг</i>\n')
         resp = resp.replace('/friday,','<i>Пятница-развратница</i>\n')
         resp = resp.replace('/saturday,','<i>Суббота</i>\n')
-
         print(len(resp))
         print(resp)
-
-
         return resp
 
 
