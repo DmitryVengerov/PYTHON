@@ -24,13 +24,11 @@ class GameOfLife:
 
         self.speed = speed
 
-
     def draw_grid(self):
         for x in range(0, self.width, self.cell_size):
             pygame.draw.line(self.screen, pygame.Color(self.line_color), (x, 0), (x, self.height))
         for y in range(0, self.height, self.cell_size):
             pygame.draw.line(self.screen, pygame.Color(self.line_color), (0, y), (self.width, y))
-
 
     def run(self):
         pygame.init()
@@ -54,13 +52,11 @@ class GameOfLife:
             clock.tick(self.speed)
         pygame.quit()
 
-
     def cell_list(self, randomize=True):
         if randomize:
             self.cell_list = [[random.randrange(0,2) for x in range(self.width // self.cell_size)] for y in range(self.height // self.cell_size)]
             return self.cell_list
         pass
-
 
     def draw_cell_list(self, rects):
         x, y = 0, 0
@@ -73,16 +69,13 @@ class GameOfLife:
                     pygame.draw.rect(self.screen, pygame.Color(self.cell_color), (x+1, y+1, self.cell_size-1, self.cell_size-1))
                     x += self.cell_size
                     alive+=1
-                    
+
                 else:
                     pygame.draw.rect(self.screen,pygame.Color(self.empty_color),(x+1,y+1,self.cell_size-1,self.cell_size-1))
                     x += self.cell_size
                     nd+=1
             x = 0
             y += self.cell_size
-
-
-
 
     def get_neighbours(self, cell):
         row, col = cell
@@ -94,7 +87,6 @@ class GameOfLife:
             else:
                 neighbours_list.append(0)
         return neighbours_list
-
 
     def update_cell_list(self, cells):
         y, x = 0, 0
