@@ -1,6 +1,6 @@
+# twins strings
+
 def st(st1, st2):
-    
-	# check the length of strings
     if(len(st1) == len(st2)):
     	st1chet = []
     	st1nechet = []
@@ -17,7 +17,6 @@ def st(st1, st2):
     			st2chet.append(st2[i])
     		else:
     			st2nechet.append(st2[i])
-
     	st1chet = sorted(st1chet)
     	st2chet = sorted(st2chet)
     	st1nechet = sorted(st1nechet)

@@ -1,27 +1,22 @@
+# game of life
+
 import pygame
 from pygame.locals import *
 import random
 from pprint import pprint as pp
 
-
 class GameOfLife:
     def __init__(self, width = 640, height = 480, cell_size = 10, speed = 10):
-
         self.width = width
         self.height = height
         self.cell_size = cell_size
-
         self.screen_size = width, height
-
         self.screen = pygame.display.set_mode(self.screen_size)
-
         self.cell_width = self.width // self.cell_size
         self.cell_height = self.height // self.cell_size
-
         self.empty_color = 'white'
         self.line_color = 'black'
         self.cell_color = 'blue'
-
         self.speed = speed
 
     def draw_grid(self):
@@ -52,7 +47,7 @@ class GameOfLife:
             clock.tick(self.speed)
         pygame.quit()
 
-    def cell_list(self, randomize=True):
+    def cell_list(self, randomize = True):
         if randomize:
             self.cell_list = [[random.randrange(0,2) for x in range(self.width // self.cell_size)] for y in range(self.height // self.cell_size)]
             return self.cell_list
@@ -111,12 +106,9 @@ class GameOfLife:
                 x += 1
             x = 0
             y += 1
-
         pp(updated_cell_list)
-
         return updated_cell_list
 
-
 if __name__ == '__main__':
-    game = GameOfLife(320, 240, 20)
+    game = GameOfLife()
     game.run()

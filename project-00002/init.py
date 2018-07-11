@@ -1,3 +1,5 @@
+# telegramm bot
+
 import telebot
 import datetime
 import sys
@@ -7,7 +9,7 @@ import webbrowser
 
 from telebot import types
 from bs4 import BeautifulSoup
-# token gives you from botfather 
+# token gives you from botfather
 access_token = '5'
 bot = telebot.TeleBot(access_token)
 
@@ -16,8 +18,8 @@ def get_page(group, week=''):
         week = str(week) + '/'
 
     url = '{domain}/{group}/{week}raspisanie_zanyatiy_{group}.htm'.format(
-        domain="http://www.ifmo.ru/ru/schedule/0", 
-        week=week, 
+        domain="http://www.ifmo.ru/ru/schedule/0",
+        week=week,
         group=group)
     print(url)
     response = requests.get(url)
@@ -67,7 +69,7 @@ def get_schedule(web_page, day):
         lessons_list = schedule_table.find_all("td", attrs={"class": "lesson"})
         lessons_list = [lesson.text.split('\n\n') for lesson in lessons_list]
         lessons_list = [', '.join([info for info in lesson_info if info]) for lesson_info in lessons_list]
-        
+
     # Номер аудитории
         room_number = schedule_table.find_all("td", attrs={"class": "room"})
         room_number = [room.dd.text for room in room_number]
@@ -131,7 +133,7 @@ def get_command(message, idd=''):
         bot.send_message(idd, resp, parse_mode='HTML')
     if web_page == 'error':
         bot.send_message(idd, "error", parse_mode='HTML')
-            
+
 
 @bot.message_handler(commands=['exit'])
 def leave_now(message):
@@ -202,10 +204,10 @@ def not_today(message):
 
 def prettufy_mode(resp):
         # delete all trush
-       
-        resp = resp.replace('\t', '') 
+
+        resp = resp.replace('\t', '')
         resp = resp.replace('\n', '')
-            # make this better 
+            # make this better
         resp = resp.replace('./','.\n/')
         resp = resp.replace(', /','.\n/')
             # for kirrilic symbols
@@ -215,13 +217,13 @@ def prettufy_mode(resp):
         resp = resp.replace('/thursday,','<i>Четверг</i>\n')
         resp = resp.replace('/friday,','<i>Пятница-развратница</i>\n')
         resp = resp.replace('/saturday,','<i>Суббота</i>\n')
-            
+
         print(len(resp))
         print(resp)
-  
+
 
         return resp
-        
-       
+
+
 if __name__ == '__main__':
    bot.polling(none_stop=True)

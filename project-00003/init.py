@@ -1,3 +1,5 @@
+# vk api
+
 import requests
 import time
 from datetime import datetime
@@ -9,7 +11,6 @@ config = {
 
 user_id = 144176481
 
-
 def get(url, params={}, timeout=5, max_retries=5, backoff_factor=0.3):
     for attempt in range(max_retries):
         try:
@@ -19,7 +20,6 @@ def get(url, params={}, timeout=5, max_retries=5, backoff_factor=0.3):
             if attempt == max_retries - 1:
                 raise
             backoff_value = backoff_factor * (2 ** attempt)
-
 
 def get_data(user_id, field):
     # for configuration to another ethernet point you must get access_token
@@ -36,7 +36,6 @@ def get_data(user_id, field):
 
     return requests.get(query).json()
 
-
 def get_history(user_id):
     # for configuration to another ethernet point you must get access_token
     # ones more because api check ip-address and then would give you token
@@ -51,7 +50,6 @@ def get_history(user_id):
         **query_params)
 
     return requests.get(query).json()
-
 
 def age_predict(user_id):
     # check config data
@@ -79,7 +77,6 @@ def age_predict(user_id):
         year_arr[i] = 2017 - int(year_arr[i])
 
     return int(sum(year_arr)/len(year_arr))
-
 
 def messages_get_history(user_id, offset=0, count=20):
 
@@ -111,11 +108,9 @@ def messages_get_history(user_id, offset=0, count=20):
 
     return messages
 
-
 if __name__ == '__main__':
     # config
     message = messages_get_history(user_id)
     age = age_predict(user_id)
-
     print(age)
     print(message)
