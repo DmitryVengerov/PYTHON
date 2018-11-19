@@ -90,7 +90,6 @@ def get_schedule(web_page, day):
 
 #    bot.send_message(message.chat.id, resp, parse_mode='HTML')
 
-
 @bot.message_handler(commands=['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'all'])
 def get_command(message, idd=''):
     if idd == '':
