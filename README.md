@@ -11,7 +11,7 @@ Telegram bot for shedule ITMO Universtity
 Using VK API to match friend list
 
 > Project 00004
-Reddit News Parser (freeze)
+Reddit News Parser
 
 > Project 00005
 Twins strings algorithms
