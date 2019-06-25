@@ -49,15 +49,18 @@ class Lab2_first(image_service):
 
 # SECOND TASK
 class Lab2_second(image_service):
-	pass
+	def __init__(self):
+		pass
 
 # THIRD TASK
 class Lab2_third(image_service):
-	pass
+	def __init__(self):
+		pass
 
 # FOUR TASK
 class Lab2_four(image_service):
-	pass
+	def __init__(self):
+		pass
         
 
 if __name__ == '__main__':
