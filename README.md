@@ -8,7 +8,7 @@ Game of life on PyGame
 Telegram bot for shedule ITMO Universtity 
 
 > Project 00003 
-Using VK API to match friend list (freeze)
+Using VK API to match friend list
 
 > Project 00004
 Reddit News Parser (freeze)
