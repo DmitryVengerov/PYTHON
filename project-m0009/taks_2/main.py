@@ -3,11 +3,13 @@ from skimage.exposure import histogram
 from skimage.util import random_noise
 from scipy.ndimage.filters import median_filter
 from PIL import Image, ImageFilter, ImageChops
+
 import os
 import numpy as np
 import collections
 import warnings
 import matplotlib.pyplot as plt
+import cv2 as cv
 
 class image_service:
     def __init__(self):
@@ -30,27 +32,26 @@ class image_service:
         plt.xlim([0, 256])
         plt.show()
 
-# FIRST TASK
 class LabTwo(image_service):
     def __init__(self):
         self.image = self.read_file('simple.jpg')
-        self.linearImage = self.read_file('./lab_2_pic/linear_stretch.jpg')
-        self.grayImage = self.read_file('./lab_2_pic/gray_simple.jpg')
-        self.spImage = self.read_file('./lab_2_pic/sp_gray_simple.jpg')
+        #self.linearImage = self.read_file('./lab_2_pic_test/linear_stretch.jpg')
+       	self.grayImage = self.read_file('./lab_2_pic/gray_simple.jpg')
+        #self.spImage = self.read_file('./lab_2_pic/sp_gray_simple.jpg')
 
-        self.spGrayImage = self.read_file('./lab_2_pic/sp_gray_simple.jpg')
-        self.spMedianImage = self.read_file('./lab_2_pic/sp_median_filter.jpg')
+        #self.spGrayImage = self.read_file('./lab_2_pic/sp_gray_simple.jpg')
+        #self.spMedianImage = self.read_file('./lab_2_pic/sp_median_filter.jpg')
 
-        self.pct = 10
+        #self.pct = 10
         self.kernel = np.array([[1/9,1/9,1/9], [1/9,1/9,1/9], [1/9,1/9,1/9]])
         
     def call(self):
-        # self.save_image('gray_simple.jpg', self.makeGrayscale())
-        # self.makeHistogram()
+        #self.save_image('gray_simple.jpg', self.makeGrayscale())
+        #self.makeHistogram()
 
-        # self.save_image('linearStretch.jpg', self.linearStretch())
-        # self.image = self.read_file('./lab_2_pic/linearStretch.jpg')
-        # self.makeHistogram()
+        #self.save_image('linearStretch.jpg', self.linearStretch())
+        #self.image = self.read_file('./lab_2_pic/linearStretch.jpg')
+        #self.makeHistogram()
 
         # self.save_image('diff.jpg', self.difference())
         # self.save_image('docked.jpg', self.docking())
@@ -65,10 +66,25 @@ class LabTwo(image_service):
 
         # self.save_image('spGray_simple.jpg', self.spGray())
         # self.save_image('sp_median_filter.jpg', self.medianFilter())
-        
+
         # self.save_image('gray_diff_filtered.jpg', self.differenceFilter())
-        # self.save_image('grat_convolution.jpg', self.convolution())
-        self.average()
+        # self.save_image('averaging.jpg', self.convolution())
+        # self.average()
+        # self.autoav()
+        # self.shift_1()
+        # self.auto_shift()
+        # self.diff_shiftmap()
+        # self.gauss_filter()
+        # self.auto_gauss()
+        # self.get_docking_gauss()
+        # self.diff_gauss()
+	    # self.sharp()
+        # self.autosharp()
+        # self.get_docking_autosharp()
+        # self.diff_autosharp()
+        # self.unsharped_mask()
+        self.unsharped_mask_diff()
+        self.unsharped_mask_map()
 
     # тут серим
     def makeGrayscale(self):
@@ -113,7 +129,6 @@ class LabTwo(image_service):
         return image.astype('uint8')  
 
     def exp(self, image):
-
         y, x = histogram(image)
         
         xMin = int(np.percentile(x, 0))
@@ -141,8 +156,7 @@ class LabTwo(image_service):
 
         return np.dstack((r, g, b)).astype('uint8')
 
-        # стыковка изображения
-    
+    # стыковка изображения
     def dockingGrayWorld(self):
         image = self.image
         Image = self.grayWorld()
@@ -160,7 +174,6 @@ class LabTwo(image_service):
 
     # 2.4
     def convolution(self):
-        kernel = np.flipud(np.fliplr(self.kernel))
         output = np.zeros_like(self.grayImage)
         img_padded = np.zeros((self.grayImage.shape[0] + 2, self.grayImage.shape[1] + 2))
         img_padded[1 : -1, 1 : -1] = self.grayImage
@@ -172,11 +185,125 @@ class LabTwo(image_service):
         return output
 
     def average(self):
-        # pass
         self.save_image('average_gray.jpg',self.grayImage.filter(ImageFilter.SMOOTH))
+    
+    def autoav(self):
+        pilgray = Image.open('./lab_2_pic/gray_simple.jpg')
+        autoav = pilgray.filter(ImageFilter.SMOOTH)
+        autoav.save('./lab_2_pic/autoav.jpg')
+        self.save_image('autoav_diff.jpg', (img_as_float(autoav) - img_as_float(pilgray)))
+
+    # 2.5
+    def shift_1(self):
+        grayImage = self.read_file('./lab_2_pic/gray_simple.jpg')
+        kernel = np.array([[0,0,0], [1,0,0], [0,0,0]])
+        shift_1 = self.convolution_shift(grayImage, kernel)
+        self.save_image('shift_1.jpg', shift_1)
+
+    # TODO:
+    # must be DRY
+    def convolution_shift(self, image, kernel):
+        output = np.zeros_like(image)
+        img_padded = np.zeros((image.shape[0] + 2, image.shape[1] + 2))
+        img_padded[1 : -1, 1 : -1] = image
+
+        for x in range(image.shape[1]):
+            for y in range(image.shape[0]):
+                output[y, x] = (kernel * img_padded[y: y+3, x: x+3]).sum()
+
+        return output
+    
+    # autoshift
+    def auto_shift(self):
+        grayImage = Image.open('./lab_2_pic/gray_simple.jpg')
+        autoshift = ImageChops.offset(grayImage, 1, 0)
+        autoshift.save('./lab_2_pic/autoshift.jpg')
+    
+    def diff_shiftmap(self):
+        shift_1 = self.read_file('./lab_2_pic/shift_1.jpg')
+        autoshift = self.read_file('./lab_2_pic/autoshift.jpg')
+        self.save_image('diff_autoshift.jpg', np.abs(shift_1 - autoshift))
+
+    # gauss filter
+    def gauss_filter(self):
+        kernel = np.array([[0.09, 0.12, 0.09], [0.12, 0.15, 0.12], [0.09, 0.12, 0.09 ]])
+        grayImage = self.read_file('./lab_2_pic/gray_simple.jpg')
+        gauss = self.convolution_shift(grayImage, kernel)
+        self.save_image('gauss.jpg', gauss)
+
+    def auto_gauss(self):
+        grayImage = Image.open('./lab_2_pic/gray_simple.jpg')
+        autoGauss = grayImage.filter(ImageFilter.GaussianBlur)
+        autoGauss.save('./lab_2_pic/autogauss.jpg')
+    
+    def get_docking_gauss(self):
+        return self.save_image('docking_gauss.jpg', self.docking_gauss())
+
+    def docking_gauss(self):
+        image = self.read_file('./lab_2_pic/gray_simple.jpg')
+        autoGauss = self.read_file('./lab_2_pic/autogauss.jpg')
+
+        for px in range(len(image) // 2, len(autoGauss)):
+            image[px] = autoGauss[px]
+
+        return image.astype('uint8') 
+
+    def diff_gauss(self):
+        image = self.read_file('./lab_2_pic/gray_simple.jpg')
+        autoGauss = self.read_file('./lab_2_pic/autogauss.jpg')
+        self.save_image('map_gauss.jpg', np.abs(image - autoGauss))
+
+    # повышение резкости 
+    def sharp(self):
+	    image = self.read_file('./lab_2_pic/gray_simple.jpg')
+	    kernel = np.array([[0, -0.04, 0],[-0.04, 2, -0.04],[0,-0.04,0]])
+	    sharpened = self.convolution_shift(image, kernel)
+	    self.save_image('sharped.jpg', sharpened)
+
+    def autosharp(self):
+        grayImage = Image.open('./lab_2_pic/gray_simple.jpg')
+        autosharp = grayImage.filter(ImageFilter.SHARPEN)
+        autosharp.save('./lab_2_pic/autosharp.jpg')
+
+    def get_docking_autosharp(self):
+        return self.save_image('docking_autosharp.jpg', self.docking_autosharp())
+
+    def docking_autosharp(self):
+        image = self.read_file('./lab_2_pic/gray_simple.jpg')
+        autosharp = self.read_file('./lab_2_pic/sharped.jpg')
+
+        for px in range(len(image) // 2, len(autosharp)):
+            image[px] = autosharp[px]
+
+        return image.astype('uint8') 
+
+    def diff_autosharp(self):
+        image = self.read_file('./lab_2_pic/gray_simple.jpg')
+        autosharp = self.read_file('./lab_2_pic/sharped.jpg')
+        self.save_image('map_autosharp.jpg', np.abs(image - autosharp))
+
+    # unsharped mask 
+    def unsharped_mask(self):
+        image = self.read_file('./lab_2_pic/gray_simple.jpg')
+
+        gaussian_3 = cv.GaussianBlur(image, (9, 9), 10.0)
+        unsharped_img = cv.addWeighted(image, 1.5, gaussian_3, -0.5, 0, image)
+        cv.imwrite('./lab_2_pic/unsharp_img.jpg', unsharped_img)
+
+    def unsharped_mask_diff(self):
+        image = self.read_file('./lab_2_pic/gray_simple.jpg')
+        unsharped = self.read_file('./lab_2_pic/unsharp_img.jpg')
+
+        for px in range(len(image) // 2, len(unsharped)):
+            image[px] = unsharped[px]
+
+        self.save_image('unsharped_mask_diff.jpg', image.astype('uint8'))
 
 
-
-
+    def unsharped_mask_map(self):
+        image = self.read_file('./lab_2_pic/gray_simple.jpg')
+        unsharped = self.read_file('./lab_2_pic/unsharp_img.jpg')
+        self.save_image('unsharped_mask_map.jpg', np.abs(image - unsharped))
 if __name__ == '__main__':
-    lab_two = LabTwo().call()
+    LabTwo().call()
+
