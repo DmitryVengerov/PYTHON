@@ -27,10 +27,38 @@ class image_service:
     def read_file(self, name):
         return io.imread(name)
 
-    def get_histogram(self, image):
+    def get_histogram(self, image, name):
         plt.hist(image.ravel(), bins = range(257))
         plt.xlim([0, 256])
-        plt.show()
+        self.save_image(name, plt)
+        # plt.show()
+
+    
+    def get_difference(self, source_image, modified_image, name):
+        for px in range(len(source_image) // 2, len(modified_image)):
+            source_image[px] = modified_image[px]
+        return self.save_image(name, source_image.astype('uint8'))
+    
+    def get_map(self, source_image, modified_image, name):
+        return self.save_image(name, np.abs(source_image - modified_image))
+    
+    def get_convolution(self, image, kernel):
+        output = np.zeros_like(image)
+        img_padded = np.zeros((image.shape[0] + 2, image.shape[1] + 2))
+        img_padded[1 : -1, 1 : -1] = image
+
+        for x in range(image.shape[1]):
+            for y in range(image.shape[0]):
+                output[y, x] = (kernel * img_padded[y: y+3, x: x+3]).sum()
+
+        return output
+    
+    def get_docking(self, source_image, modified_image,):
+        for px in range(len(source_image) // 2, len(modified_image)):
+            source_image[px] = modified_image[px]
+
+        return source_image.astype('uint8') 
+
 
 class LabTwo(image_service):
     def __init__(self):
@@ -48,25 +76,18 @@ class LabTwo(image_service):
     def call(self):
         #self.save_image('gray_simple.jpg', self.makeGrayscale())
         #self.makeHistogram()
-
         #self.save_image('linearStretch.jpg', self.linearStretch())
         #self.image = self.read_file('./lab_2_pic/linearStretch.jpg')
         #self.makeHistogram()
-
         # self.save_image('diff.jpg', self.difference())
         # self.save_image('docked.jpg', self.docking())
-
         # self.save_image('exp_simple.jpg', self.eachChannel())
         # self.image = self.read_file('./lab_2_pic/exp_simple.jpg')
         # self.makeHistogram()
-
         # self.save_image('gray_word_simple.jpg', self.grayWorld())
-
         # self.save_image('docking_gray_wold.jpg', self.dockingGrayWorld())
-
         # self.save_image('spGray_simple.jpg', self.spGray())
         # self.save_image('sp_median_filter.jpg', self.medianFilter())
-
         # self.save_image('gray_diff_filtered.jpg', self.differenceFilter())
         # self.save_image('averaging.jpg', self.convolution())
         # self.average()
@@ -83,9 +104,9 @@ class LabTwo(image_service):
         # self.get_docking_autosharp()
         # self.diff_autosharp()
         # self.unsharped_mask()
-        self.unsharped_mask_diff()
-        self.unsharped_mask_map()
-
+        # self.unsharped_mask_diff()
+        # self.unsharped_mask_map()
+        pass
     # тут серим
     def makeGrayscale(self):
         r_channel = self.image[:,:,0]
@@ -304,6 +325,9 @@ class LabTwo(image_service):
         image = self.read_file('./lab_2_pic/gray_simple.jpg')
         unsharped = self.read_file('./lab_2_pic/unsharp_img.jpg')
         self.save_image('unsharped_mask_map.jpg', np.abs(image - unsharped))
+
+# class 
+
 if __name__ == '__main__':
     LabTwo().call()
 
