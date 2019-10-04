@@ -32,7 +32,6 @@ class image_service:
         plt.xlim([0, 256])
         self.save_image(name, plt)
         # plt.show()
-
     
     def get_difference(self, source_image, modified_image, name):
         for px in range(len(source_image) // 2, len(modified_image)):
@@ -89,9 +88,9 @@ class LabTwo(image_service):
         # self.save_image('spGray_simple.jpg', self.spGray())
         # self.save_image('sp_median_filter.jpg', self.medianFilter())
         # self.save_image('gray_diff_filtered.jpg', self.differenceFilter())
-        # self.save_image('averaging.jpg', self.convolution())
-        # self.average()
-        # self.autoav()
+        self.save_image('averaging.jpg', self.convolution())
+        self.average()
+        self.autoav()
         # self.shift_1()
         # self.auto_shift()
         # self.diff_shiftmap()
@@ -201,7 +200,7 @@ class LabTwo(image_service):
 
         for x in range(self.grayImage.shape[1]):
             for y in range(self.grayImage.shape[0]):
-                output[y, x] = (kernel * img_padded[y: y+3, x: x+3]).sum()
+                output[y, x] = (self.kernel * img_padded[y: y+3, x: x+3]).sum()
 
         return output
 
