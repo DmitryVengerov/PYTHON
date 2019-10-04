@@ -16,15 +16,9 @@ class Image_service:
     pass
 
   def save_image(self, name, image):
-    PATH = './lab_3_pic/'
-
-    if not os.path.isdir(PATH):
-      os.makedirs(PATH)
-    
-    io.imsave(PATH + name, image)
+    io.imsave(name, image)
     print('Save done')
   
-
 class Compression(Image_service):
   def __init__(self, urlImage = 'simple.jpg'):
     self.image = imread(urlImage)
@@ -374,7 +368,6 @@ class Compression(Image_service):
     new_image = self.ycbct_rgb((np.dstack((Y, Cb, Cr))))
     return new_image
   
-
 class Node(namedtuple("Node", ["left", "right"])):
     def walk(self, code, acc):
         self.left.walk(code, acc + "0")
@@ -384,5 +377,34 @@ class Leaf(namedtuple("Leaf", ["char"])):
     def walk(self, code, acc):
         code[self.char] = acc or "0"
 
+class Сomparison:
+  def __init__(self):
+    self.image = imread('simple.jpg')
+    self.image_new = imread('new_image.jpg')
+
+  def call(self):
+    print(self.psnr())
+    print(self.entropy(self.image))
+    print(self.entropy(self.image_new))
+
+  def mse(self):
+    sum_px = np.sum([(px1 - px2) ** 2 for px1, px2 in zip (self.image, self.image_new)])
+    mse = np.sqrt(sum_px / (self.image.shape[0] * self.image.shape[1]))
+    return mse
+
+  def psnr(self):
+    return 20 * math.log10(255.0 / math.sqrt(self.mse()))
+
+  def entropy(self, image):
+    values, _, = np.histogram(image.ravel(), bins=range(257))
+    values = values / (image.shape[0] * image.shape[1])
+    entropy = -sum(px * np.log2(px) for px in values if px != 0)
+    return entropy
+
+  
+
+
+
 if __name__ == '__main__':
-  Compression().call()
+  # Compression().call()
+  Сomparison().call()
