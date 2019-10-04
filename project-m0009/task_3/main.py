@@ -401,9 +401,6 @@ class Сomparison:
     entropy = -sum(px * np.log2(px) for px in values if px != 0)
     return entropy
 
-  
-
-
 
 if __name__ == '__main__':
   # Compression().call()
