@@ -93,7 +93,8 @@ class AudioHistogram:
         plt.show()
 
     def call(self):
-        #self.create_frequency_spectrogram("output.wav")
+        self.create_frequency_spectrogram("output.wav")
+        self.create_amplitude_spectogramm("girei.wav")
         self.create_amplitude_spectogramm("combine.wav")
 
         pass
