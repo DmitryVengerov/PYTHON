@@ -1,4 +1,6 @@
 from skimage import *
+from skimage.io import imread, imshow, imsave
+from skimage.util.shape import view_as_windows
 import os
 import numpy as np
 import collections
@@ -87,6 +89,7 @@ class Lab1_second(Lab1_first):
 
         return np.uint8(rgb)
 
+
     def do_decimation(self):
         image = io.imread('./lab_1_pic/second_simple_yuv_1.jpg')
         self.decimation(image[:, :, 1])
@@ -106,12 +109,24 @@ class Lab1_third:
         self.simple_image = io.imread('simple.jpg')
         self.yuv_image = io.imread('./lab_1_pic/second_simple_yuv_1.jpg')
         self.dec_image = io.imread('./lab_1_pic/decimation_simple_rgb.jpg')
+        self.first_simple_gray = io.imread('./lab_1_pic/first_simple_gray.jpg')
+        self.first_simple_dimmig_8 = io.imread('./lab_1_pic/first_simple_dimmig_8.jpg')
+        self.first_simple_dimmig_16 = io.imread('./lab_1_pic/first_simple_dimmig_16.jpg')
+        self.first_simple_dimmig_32 = io.imread('./lab_1_pic/first_simple_dimmig_32.jpg')
 
     def call(self):
         self.mse(self.simple_image, self.yuv_image)
         self.mse(self.simple_image, self.dec_image)
+        
+        self.mse(self.first_simple_gray, self.first_simple_dimmig_8)
+        self.mse(self.first_simple_gray, self.first_simple_dimmig_16)
+        self.mse(self.first_simple_gray, self.first_simple_dimmig_32)
+        
+        print('entropy')
         print(self.entropy(self.simple_image))
-
+        print(self.entropy(self.first_simple_gray))
+        print(self.entropy(self.first_simple_dimmig_8))
+    
     def mse(self, image1, image2):
         print(((image1-image2)**2).mean())
 

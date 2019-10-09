@@ -96,7 +96,7 @@ class Compression(Image_service):
   #             channel[i][j+1] = channel[i][j]
   #         channel[i-1] = channel[i]
 
-  def recovery(image, new):
+  def recovery(self, image, new):
     if image.shape[1] % 2 != 0 and image.shape[0] % 2 == 0:
         new = np.hstack((new, np.reshape(image[:, -1], (-1, 1))))
     if image.shape[1] % 2 == 0 and image.shape[0] % 2 != 0:
@@ -301,9 +301,9 @@ class Compression(Image_service):
     Cr = self.get_decimation(self.refect_across_edge(new_image[:, :, 2], 16)).astype('int')
     
     # Разбиваем слои на блоки 8 на 8
-    Y = view_as_windows(Y, (8,8), step = 8)
-    Cb = view_as_windows(Cb, (8,8), step = 8)
-    Cr = view_as_windows(Cr, (8,8), step = 8)
+    Y = view_as_windows(Y, (16,16), step = 16)
+    Cb = view_as_windows(Cb, (16,16), step = 16)
+    Cr = view_as_windows(Cr, (16,16), step = 16)
 
     # Центрируем, делаем дискретное косинусное преобразование, квантуем и преобразуем блоки зигзаг обходом.
     Y = self.code(Y, 'lum')
@@ -348,9 +348,9 @@ class Compression(Image_service):
     Cr = self.decode(Cr, 'chrom')
 
     # Восстанавливаем слои без блоков
-    Y = self.recovery_layer(Y, 8)
-    Cb = self.recovery_layer(Cb, 8)
-    Cr = self.recovery_layer(Cr, 8)
+    Y = self.recovery_layer(Y, 16)
+    Cb = self.recovery_layer(Cb, 16)
+    Cr = self.recovery_layer(Cr, 16)
 
     # Восстанавливаем слои, копируя каждый элемент в блок 2 на 2 (Обратная децимация)
     Cb = np.array(np.repeat(np.repeat(Cb, 2, axis=1), 2, axis=0))
@@ -403,5 +403,5 @@ class Сomparison:
 
 
 if __name__ == '__main__':
-  # Compression().call()
+  Compression().call()
   Сomparison().call()
