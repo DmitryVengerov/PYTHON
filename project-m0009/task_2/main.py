@@ -58,7 +58,6 @@ class image_service:
 
         return source_image.astype('uint8') 
 
-
 class LabTwo(image_service):
     def __init__(self):
         self.image = self.read_file('simple.jpg')
