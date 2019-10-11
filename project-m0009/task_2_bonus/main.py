@@ -29,7 +29,7 @@ class UniformScalarQuantizer:
         intervals = self.set_intervals(self.step, self.quants, self._min)
         restored_data = np.clip(restored_data, min(intervals), max(intervals))
         self.get_info(self.data, restored_data)      
-        self.paint_plot(self.data, restored_data, intervals)
+        # self.paint_plot(self.data, restored_data, intervals)
         pass
     # генерация выборки
     def create_data(self, mu, sigma, size):
@@ -146,7 +146,7 @@ class VectorQuantizer:
         df = pd.DataFrame(data = self.dataset, columns = ['x', 'y'], index = range(self.rows))
         centroids = pd.DataFrame(data = codebook, columns = ['x', 'y'], index = range(self.quants))
         print(codebook)
-        self.paint_plot(df, centroids)
+        # self.paint_plot(df, centroids)
     # генерация выборки 
     def create_data(self, mu, sigma, rows, cols):
         return np.random.normal(mu, sigma, (rows, cols))
@@ -210,27 +210,21 @@ class LBG:
             self.set_distortion()
             iters_partial += 1
         self.set_codebook()
-    
     def set_codebook(self):
         for index in range(len(self.clusters)):
             self.codebook.append(self.clusters[index].centroid)
-    
     def get_codebook(self):
         return np.asanyarray(self.codebook)
-    
     def clean_clusters(self):
         for index in range(len(self.clusters)):
             self.clusters[index].clear_patterns()
-    
     def add_clusters(self, centroid):
         cluster = CLASTER(centroid)
         self.clusters.append(cluster)
-    
     def generate_clusters(self):
         indexes = np.random.choice(range(len(self.dataset)), self.quants, replace=False)
         for index in indexes:
             self.add_clusters(list(self.dataset[index]))
-    
     def allocate_closest_cluster(self):
         for pattern in self.dataset:
             lowest_interval = float('inf')
@@ -241,28 +235,24 @@ class LBG:
                     lowest_interval = interval
                     lowest_index = index
             self.clusters[lowest_index].add_pattern(list(pattern))
-    
     def update_centroid(self):
         for index in range(len(self.clusters)):
             self.clusters[index].update_centroid()
-    
     def set_distortion(self):
         distortion = 0
         for index in range(len(self.clusters)):
             distortion += self.clusters[index].get_partial_distortion()
         self.old_distortion = self.new_distortion
         self.new_distortion = distortion
-    
     def get_distortion_flag(self):
         return (self.old_distortion - self.new_distortion) / self.new_distortion
-    
     def print_cluster(self):
         for cluster in self.clusters:
             cluster.print_cluster()
 
 if __name__ == '__main__':
-    # UniformScalarQuantizer().call()
-    # UnevenScalarQuantizer().call()
+    UniformScalarQuantizer().call()
+    UnevenScalarQuantizer().call()
     VectorQuantizer().call()
     
     
