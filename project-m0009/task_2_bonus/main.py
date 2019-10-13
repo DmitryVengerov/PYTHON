@@ -28,8 +28,8 @@ class UniformScalarQuantizer:
         restored_data = self.resotre(quanted_data, self.step, self._min)
         intervals = self.set_intervals(self.step, self.quants, self._min)
         restored_data = np.clip(restored_data, min(intervals), max(intervals))
-        self.get_info(self.data, restored_data)      
-        # self.paint_plot(self.data, restored_data, intervals)
+        # self.get_info(self.data, restored_data)      
+        self.paint_plot(self.data, restored_data, intervals)
         pass
     # генерация выборки
     def create_data(self, mu, sigma, size):
@@ -50,8 +50,8 @@ class UniformScalarQuantizer:
     def paint_plot(self, data, restored_data, intervals):
         for i in range(len(intervals)):
             plt.plot([0, len(restored_data)], [intervals[i], intervals[i]], color = '#000000')
-        plt.plot(data, marker='o', ls='-', color='red')
-        plt.plot(restored_data, marker='o', color='#4682b4')
+        plt.plot(data, ls='-', color='red')
+        plt.plot(restored_data, color='blue')
         plt.show()
     def get_info(self, data, resotred_data):
         print('mse: ', mse(data, resotred_data))
@@ -79,8 +79,8 @@ class UnevenScalarQuantizer(UniformScalarQuantizer):
         _min = min(self.data)
         restored_data = self.quantize(self.copydata, centroids)
         restored_data = np.clip(restored_data, min(centroids), max(centroids))
-        # self.paint_plot(self.copydata, restored_data, centroids)
-        self.get_info(self.copydata, restored_data)
+        self.paint_plot(self.copydata, restored_data, centroids)
+        # self.get_info(self.copydata, restored_data)
         pass
     # функция выбора интервала
     def set_intervals(self, data, centroid, ax = 1):
@@ -253,7 +253,7 @@ class LBG:
 if __name__ == '__main__':
     UniformScalarQuantizer().call()
     UnevenScalarQuantizer().call()
-    VectorQuantizer().call()
+    # VectorQuantizer().call()
     
     
 
