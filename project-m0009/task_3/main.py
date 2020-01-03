@@ -79,7 +79,6 @@ class Compression(Image_service):
                 k += 1
             else:
                 k = 1
-                temp.append([])
                 temp[-1].append(int(i.mean()))
     #new = np.array(np.repeat(np.repeat(temp, 2, axis=1), 2, axis=0))
     return np.array(temp)
